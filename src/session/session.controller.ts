@@ -1,12 +1,14 @@
 // src/session/session.controller.ts
-import { Controller, Post, Body } from '@nestjs/common';
+import { Controller, Post, Body, UseGuards } from '@nestjs/common';
 import { Prisma, Session } from '@prisma/client';
 import { SessionService } from './session.service';
+import { JwtAuthGuard } from 'src/auth/logged-in.guard';
 
 @Controller('session')
 export class SessionController {
   constructor(private sessionService: SessionService) {}
 
+  @UseGuards(JwtAuthGuard)
   @Post('create')
   async createSession(
     @Body() data: Prisma.SessionCreateInput,
@@ -21,6 +23,7 @@ export class SessionController {
     return this.sessionService.find(where);
   }
 
+  @UseGuards(JwtAuthGuard)
   @Post('update')
   async updateSession(
     @Body() where: Prisma.SessionWhereInput,
@@ -29,6 +32,7 @@ export class SessionController {
     return await this.sessionService.update(where, data);
   }
 
+  @UseGuards(JwtAuthGuard)
   @Post('delete')
   async deleteSession(
     @Body() where: Prisma.SessionWhereInput,

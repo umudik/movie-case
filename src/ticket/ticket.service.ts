@@ -10,14 +10,15 @@ export class TicketService
   implements
     Repository<
       Ticket,
-      Prisma.TicketCreateInput,
+      Ticket,
       Prisma.TicketUpdateInput,
       Prisma.TicketWhereInput
     >
 {
   constructor(private prisma: PrismaService) {}
 
-  async create(data: Prisma.TicketCreateInput): Promise<Ticket> {
+  async create(data: Ticket): Promise<Ticket> {
+    data.status = 'available';
     return this.prisma.ticket.create({
       data,
     });
@@ -31,6 +32,20 @@ export class TicketService
     where: Prisma.TicketWhereInput,
     data: Prisma.TicketUpdateInput,
   ): Promise<Boolean> {
+    if (data.status === 'sold') {
+      const ticketsToUpdate = await this.prisma.ticket.findMany({
+        where,
+        include: { Session: { include: { Movie: true } }, User: true },
+      });
+
+      for (const ticket of ticketsToUpdate) {
+        if (ticket.User.age < ticket.Session.Movie.age_restriction) {
+          throw new Error(
+            'The user does not meet the age restriction for this movie.',
+          );
+        }
+      }
+    }
     await this.prisma.ticket.updateMany({
       where,
       data,
