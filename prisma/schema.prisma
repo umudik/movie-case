@@ -40,12 +40,12 @@ model Session {
 }
 
 model Ticket {
-  id         Int      @id @default(autoincrement())
-  status     String
-  created_at DateTime @default(now())
-  updated_at DateTime @updatedAt
-  User       User     @relation(fields: [user_id], references: [id])
-  Session    Session  @relation(fields: [session_id], references: [id])
-  user_id    Int
-  session_id Int
+  id         Int       @id @default(autoincrement())
+  status     String?
+  created_at DateTime? @default(now())
+  updated_at DateTime? @updatedAt
+  User       User?     @relation(fields: [user_id], references: [id])
+  Session    Session?  @relation(fields: [session_id], references: [id])
+  user_id    Int?
+  session_id Int?
 }

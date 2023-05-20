@@ -17,8 +17,8 @@ export class TicketService
 {
   constructor(private prisma: PrismaService) {}
 
-  async create(data: Ticket): Promise<Ticket> {
-    data.status = 'available';
+  async create(data: Prisma.TicketUncheckedCreateInput): Promise<Ticket> {
+    data.status = 'sold';
     return this.prisma.ticket.create({
       data,
     });

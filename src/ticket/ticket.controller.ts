@@ -1,8 +1,8 @@
 // src/ticket/ticket.controller.ts
-import { Body, Controller, Post, UseGuards } from '@nestjs/common';
+import { Body, Controller, Post, UseGuards, Request } from '@nestjs/common';
 import { Prisma, Ticket } from '@prisma/client';
 import { TicketService } from './ticket.service';
-import { JwtAuthGuard } from 'src/auth/logged-in.guard';
+import { JwtAuthGuard } from '../../src/auth/logged-in.guard';
 
 @Controller('ticket')
 export class TicketController {
@@ -10,18 +10,19 @@ export class TicketController {
 
   @UseGuards(JwtAuthGuard)
   @Post('create')
-  async createTicket(@Body() ticketData: Ticket): Promise<Ticket> {
-    ticketData.user_id = 0;
+  async createTicket(
+    @Body() ticketData: Ticket,
+    @Request() req,
+  ): Promise<Ticket> {
+    ticketData.user_id = req.user.id;
     return this.ticketService.create(ticketData);
   }
 
-  @UseGuards(JwtAuthGuard)
   @Post('find')
   async getTickets(@Body() where: Prisma.TicketWhereInput): Promise<Ticket[]> {
     return this.ticketService.find(where);
   }
 
-  @UseGuards(JwtAuthGuard)
   @Post('update')
   async updateTicket(
     @Body()
@@ -33,7 +34,6 @@ export class TicketController {
     return await this.ticketService.update(updateData.where, updateData.data);
   }
 
-  @UseGuards(JwtAuthGuard)
   @Post('delete')
   async deleteTicket(@Body() where: Prisma.TicketWhereInput): Promise<Boolean> {
     return this.ticketService.delete(where);

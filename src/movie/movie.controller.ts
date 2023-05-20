@@ -1,14 +1,16 @@
 import { Controller, Post, Body, UseGuards } from '@nestjs/common';
 import { Prisma, Movie } from '@prisma/client';
 import { MovieService } from './movie.service';
-import { JwtAuthGuard } from 'src/auth/logged-in.guard';
+import { JwtAuthGuard } from '../../src/auth/logged-in.guard';
+import { RolesGuard, Roles } from '../../src/auth/role.guard';
 
-@Controller('Movie')
+@Controller('movie')
+@UseGuards(RolesGuard)
 export class MovieController {
   constructor(private movieService: MovieService) {}
 
-  @UseGuards(JwtAuthGuard)
   @Post('create')
+  @Roles('admin')
   async createMovie(@Body() data: Prisma.MovieCreateInput): Promise<Movie> {
     return this.movieService.create(data);
   }
@@ -20,7 +22,6 @@ export class MovieController {
     return this.movieService.find(where);
   }
 
-  @UseGuards(JwtAuthGuard)
   @Post('update')
   async updateMovie(
     @Body() where: Prisma.MovieWhereUniqueInput,
@@ -29,7 +30,6 @@ export class MovieController {
     return await this.movieService.update(where, data);
   }
 
-  @UseGuards(JwtAuthGuard)
   @Post('delete')
   async deleteMovie(
     @Body() where: Prisma.MovieWhereUniqueInput,

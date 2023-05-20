@@ -1,15 +1,35 @@
 import { Module } from '@nestjs/common';
-import { AppController } from './app.controller';
-import { AppService } from './app.service';
 import { PrismaService } from './prisma/prisma.service';
 import { AuthController } from './auth/auth.controller';
 import { UserController } from './user/user.controller';
 import { UserService } from './user/user.service';
 import { AuthService } from './auth/auth.service';
 import { JwtService } from '@nestjs/jwt';
+import { MovieController } from './movie/movie.controller';
+import { SessionController } from './session/session.controller';
+import { TicketController } from './ticket/ticket.controller';
+import { MovieService } from './movie/movie.service';
+import { SessionService } from './session/session.service';
+import { TicketService } from './ticket/ticket.service';
+import { JwtStrategy } from './auth/jwt.strategy';
 
 @Module({
-  controllers: [AppController, AuthController, UserController],
-  providers: [AppService, JwtService, PrismaService, UserService, AuthService],
+  controllers: [
+    UserController,
+    MovieController,
+    SessionController,
+    TicketController,
+    AuthController,
+  ],
+  providers: [
+    PrismaService,
+    UserService,
+    MovieService,
+    SessionService,
+    TicketService,
+    AuthService,
+    JwtStrategy,
+    JwtService,
+  ],
 })
 export class AppModule {}

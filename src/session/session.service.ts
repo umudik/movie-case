@@ -4,27 +4,33 @@ import { Session, Prisma } from '@prisma/client';
 import { PrismaService } from '../prisma/prisma.service';
 import { Repository } from 'src/enitity.repository';
 import * as lodash from 'lodash';
+import { TicketService } from '../../src/ticket/ticket.service';
 
 @Injectable()
 export class SessionService
   implements
     Repository<
       Session,
-      Prisma.SessionCreateInput,
+      Session,
       Prisma.SessionUpdateInput,
       Prisma.SessionWhereInput
     >
 {
-  constructor(private prisma: PrismaService) {}
+  constructor(
+    private prisma: PrismaService,
+    private ticketService: TicketService,
+  ) {}
 
-  async create(data: Prisma.SessionCreateInput): Promise<Session> {
-    return this.prisma.session.create({
+  async create(data: Session): Promise<Session> {
+    const session = await this.prisma.session.create({
       data,
     });
+
+    return session;
   }
 
   async find(where: Prisma.SessionWhereInput): Promise<Session[]> {
-    return this.prisma.session.findMany({ where });
+    return await this.prisma.session.findMany({ where });
   }
 
   async update(

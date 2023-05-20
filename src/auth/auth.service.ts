@@ -28,7 +28,9 @@ export class AuthService {
   async login(user: User) {
     const payload = { id: user.id };
     return {
-      token: this.jwtService.sign(payload),
+      token: this.jwtService.sign(payload, {
+        privateKey: 'umudik',
+      }),
     };
   }
 }
