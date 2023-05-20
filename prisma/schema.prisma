@@ -11,11 +11,12 @@ datasource db {
 }
 
 model User {
-  id       Int    @id @default(autoincrement())
+  id       Int      @id @default(autoincrement())
   email    String
   password String
   age      Int
   role     String
+  Ticket   Ticket[]
 }
 
 model Movie {
@@ -32,4 +33,13 @@ model Session {
   room_no   Int
   movie_id  Int
   Movie     Movie    @relation(fields: [movie_id], references: [id])
+  Ticket    Ticket[]
+}
+
+model Ticket {
+  id         Int     @id @default(autoincrement())
+  User       User    @relation(fields: [user_id], references: [id])
+  Session    Session @relation(fields: [session_id], references: [id])
+  user_id    Int
+  session_id Int
 }
