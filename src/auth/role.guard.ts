@@ -5,24 +5,24 @@ import {
   SetMetadata,
 } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
-import { Observable } from 'rxjs';
+import { User } from '@prisma/client';
+import * as jwt from 'jsonwebtoken';
 
 @Injectable()
 export class RolesGuard implements CanActivate {
   constructor(private reflector: Reflector) {}
 
-  canActivate(
-    context: ExecutionContext,
-  ): boolean | Promise<boolean> | Observable<boolean> {
+  canActivate(context: ExecutionContext): boolean | Promise<boolean> {
     const roles = this.reflector.get<string[]>('roles', context.getHandler());
-    console.log(roles);
-
     if (!roles) {
       return true;
     }
+
     const request = context.switchToHttp().getRequest();
-    const user = request.user;
-    console.log(user);
+    const authHeader = request.headers.authorization;
+
+    const token = authHeader.split(' ')[1];
+    const user = jwt.verify(token, 'umudik') as User;
 
     return roles.includes(user.role);
   }

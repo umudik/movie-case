@@ -2,7 +2,7 @@
 import { Injectable } from '@nestjs/common';
 import { User, Prisma } from '@prisma/client';
 import { PrismaService } from '../prisma/prisma.service';
-import { Repository } from 'src/enitity.repository';
+import { Repository } from '../../src/enitity.repository';
 import * as lodash from 'lodash';
 
 @Injectable()

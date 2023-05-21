@@ -4,7 +4,7 @@ import { UserService } from '../user/user.service';
 import { JwtService } from '@nestjs/jwt';
 import { User, Prisma } from '@prisma/client';
 import { createHmac } from 'crypto';
-
+import * as lodash from 'lodash';
 @Injectable()
 export class AuthService {
   constructor(
@@ -17,16 +17,12 @@ export class AuthService {
   }
 
   async validateUser(email: string, password: string): Promise<any> {
-    const user = (await this.userService.find({ email }))[0];
-    if (user && user.password === this.hashPassword(password)) {
-      const { password, ...result } = user;
-      return result;
-    }
-    return null;
+    const user = (await this.userService.find({ email, password }))[0];
+    return user;
   }
 
   async login(user: User) {
-    const payload = { id: user.id };
+    const payload = lodash.omit(user, 'password');
     return {
       token: this.jwtService.sign(payload, {
         privateKey: 'umudik',

@@ -98,7 +98,7 @@ describe('AppController (e2e)', () => {
   it('should create a movie as admin user', async () => {
     const response = await request(app.getHttpServer())
       .post('/movie/create')
-      .set('Authorization', `${admin_token}`)
+      .set('Authorization', `Bearer ${admin_token}`)
       .send({
         name: 'Test Movie' + seed,
         age_restriction: 18,
