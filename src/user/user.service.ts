@@ -1,23 +1,16 @@
-// src/user/user.service.ts
 import { Injectable } from '@nestjs/common';
 import { User, Prisma } from '@prisma/client';
 import { PrismaService } from '../prisma/prisma.service';
-import { Repository } from '../../src/enitity.repository';
+import { Repository } from 'src/enitity.repository';
 import * as lodash from 'lodash';
-
 @Injectable()
 export class UserService
   implements
-    Repository<
-      User,
-      Prisma.UserCreateInput,
-      Prisma.UserUpdateInput,
-      Prisma.UserWhereInput
-    >
+    Repository<User, User, Prisma.UserUpdateInput, Prisma.UserWhereInput>
 {
   constructor(private prisma: PrismaService) {}
 
-  async create(data: Prisma.UserCreateInput): Promise<User> {
+  async create(data: User): Promise<User> {
     return this.prisma.user.create({
       data,
     });

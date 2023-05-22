@@ -7,6 +7,10 @@ datasource db {
   url      = "file:./dev.db"
 }
 
+generator nestJsSwagger {
+  provider = "prisma-generator-nestjs-swagger"
+}
+
 model User {
   id         Int      @id @default(autoincrement())
   email      String

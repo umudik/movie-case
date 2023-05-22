@@ -1,9 +1,12 @@
 // src/Ticket/Ticket.service.ts
-import { Injectable } from '@nestjs/common';
+import { Injectable, Req } from '@nestjs/common';
 import { Ticket, Prisma } from '@prisma/client';
 import { PrismaService } from '../prisma/prisma.service';
 import { Repository } from 'src/enitity.repository';
 import * as lodash from 'lodash';
+import { UserService } from 'src/user/user.service';
+import { SessionService } from 'src/session/session.service';
+import { MovieService } from 'src/movie/movie.service';
 
 @Injectable()
 export class TicketService
@@ -15,12 +18,42 @@ export class TicketService
       Prisma.TicketWhereInput
     >
 {
-  constructor(private prisma: PrismaService) {}
+  constructor(
+    private prisma: PrismaService,
+    private userService: UserService,
+    private sessionService: SessionService,
+    private movieService: MovieService,
+  ) {}
 
-  async create(data: Prisma.TicketUncheckedCreateInput): Promise<Ticket> {
-    data.status = 'sold';
+  async create(ticket: Prisma.TicketUncheckedCreateInput): Promise<Ticket> {
+    ticket.status = 'waiting';
+
+    const user = (
+      await this.userService.find({
+        id: ticket.user_id,
+      })
+    )[0];
+
+    const session = (
+      await this.sessionService.find({
+        id: ticket.session_id,
+      })
+    )[0];
+
+    const movie = (
+      await this.movieService.find({
+        id: session.movie_id,
+      })
+    )[0];
+
+    if (user.age < movie.age_restriction) {
+      throw new Error(
+        'The user does not meet the age restriction for this movie.',
+      );
+    }
+
     return this.prisma.ticket.create({
-      data,
+      data: ticket,
     });
   }
 
@@ -32,20 +65,6 @@ export class TicketService
     where: Prisma.TicketWhereInput,
     data: Prisma.TicketUpdateInput,
   ): Promise<Boolean> {
-    if (data.status === 'sold') {
-      const ticketsToUpdate = await this.prisma.ticket.findMany({
-        where,
-        include: { Session: { include: { Movie: true } }, User: true },
-      });
-
-      for (const ticket of ticketsToUpdate) {
-        if (ticket.User.age < ticket.Session.Movie.age_restriction) {
-          throw new Error(
-            'The user does not meet the age restriction for this movie.',
-          );
-        }
-      }
-    }
     await this.prisma.ticket.updateMany({
       where,
       data,

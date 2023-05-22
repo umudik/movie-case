@@ -3,7 +3,7 @@ import { INestApplication } from '@nestjs/common';
 import * as request from 'supertest';
 import { AppModule } from '../src/app.module';
 import { PrismaService } from '../src/prisma/prisma.service';
-import { Movie, Session } from '@prisma/client';
+import { Movie, Session, Ticket } from '@prisma/client';
 
 describe('AppController (e2e)', () => {
   const seed = Date.now();
@@ -16,6 +16,7 @@ describe('AppController (e2e)', () => {
   let user2 = null;
   let movie: Movie = null;
   let session: Session = null;
+  let ticket_1: Ticket = null;
   beforeEach(async () => {
     const moduleFixture: TestingModule = await Test.createTestingModule({
       imports: [AppModule],
@@ -25,7 +26,7 @@ describe('AppController (e2e)', () => {
     await app.init();
   });
 
-  it('/user/create(POST) admin', async () => {
+  it('create admin', async () => {
     const response = await request(app.getHttpServer())
       .post('/user/create')
       .send({ email: 'test@test.com' + seed, password: 'test', age: 20 })
@@ -41,7 +42,7 @@ describe('AppController (e2e)', () => {
     });
   });
 
-  it('/auth/login (POST)', async () => {
+  it('login admin', async () => {
     const response = await request(app.getHttpServer())
       .post('/auth/login')
       .send({ email: 'test@test.com' + seed, password: 'test' })
@@ -52,7 +53,7 @@ describe('AppController (e2e)', () => {
     admin_token = response.body.token;
   });
 
-  it('should create customer 1', async () => {
+  it('create customer 1', async () => {
     const response = await request(app.getHttpServer())
       .post('/user/create')
       .send({ email: 'u1@test.com' + seed, password: 'test', age: 30 })
@@ -62,7 +63,7 @@ describe('AppController (e2e)', () => {
     expect(response.body.age).toBe(30);
     user1 = response.body;
   });
-  it('should create customer2 ', async () => {
+  it('create customer2 ', async () => {
     const response = await request(app.getHttpServer())
       .post('/user/create')
       .send({ email: 'u2@test.com' + seed, password: 'test', age: 10 })
@@ -73,7 +74,7 @@ describe('AppController (e2e)', () => {
     user2 = response.body;
   });
 
-  it('should login user 1', async () => {
+  it('login user 1', async () => {
     const response = await request(app.getHttpServer())
       .post('/auth/login')
       .send({ email: 'u1@test.com' + seed, password: 'test' })
@@ -84,7 +85,7 @@ describe('AppController (e2e)', () => {
     user1_token = response.body.token;
   });
 
-  it('should login user 2', async () => {
+  it('login user 2', async () => {
     const response = await request(app.getHttpServer())
       .post('/auth/login')
       .send({ email: 'u2@test.com' + seed, password: 'test' })
@@ -95,7 +96,7 @@ describe('AppController (e2e)', () => {
     user2_token = response.body.token;
   });
 
-  it('should create a movie as admin user', async () => {
+  it('create a movie as admin user', async () => {
     const response = await request(app.getHttpServer())
       .post('/movie/create')
       .set('Authorization', `Bearer ${admin_token}`)
@@ -110,7 +111,7 @@ describe('AppController (e2e)', () => {
     movie = response.body;
   });
 
-  it('should create a session for a movie', async () => {
+  it('create a session for a movie', async () => {
     const response = await request(app.getHttpServer())
       .post('/session/create')
       .set('Authorization', `Bearer ${admin_token}`)
@@ -128,7 +129,7 @@ describe('AppController (e2e)', () => {
     session = response.body;
   });
 
-  it('should buy a ticket for user 1', async () => {
+  it('buy a ticket for user 1', async () => {
     const response = await request(app.getHttpServer())
       .post('/ticket/create')
       .set('Authorization', `Bearer ${user1_token}`)
@@ -137,22 +138,50 @@ describe('AppController (e2e)', () => {
       })
       .expect(201);
 
-    expect(response.body.status).toBe('sold');
+    expect(response.body.status).toBe('waiting');
     expect(response.body.user_id).toBe(user1.id);
     expect(response.body.session_id).toBe(session.id);
+    ticket_1 = response.body;
   });
 
-  it('should buy a ticket for user 2', async () => {
+  it('buy a ticket for user 2', async () => {
     const response = await request(app.getHttpServer())
       .post('/ticket/create')
       .set('Authorization', `Bearer ${user2_token}`)
       .send({
         session_id: session.id,
       })
-      .expect(201);
+      .expect(500);
+    //The user does not meet the age restriction for this movie.
+  });
 
-    expect(response.body.status).toBe('sold');
-    expect(response.body.user_id).toBe(user2.id);
-    expect(response.body.session_id).toBe(session.id);
+  it('validate ticket before the show', async () => {
+    const response = await request(app.getHttpServer())
+      .post('/ticket/update')
+      .set('Authorization', `Bearer ${user1_token}`)
+      .send({
+        where: {
+          id: ticket_1.id,
+        },
+        data: {
+          status: 'validated',
+        },
+      })
+      .expect(201);
+  });
+
+  it('watch the film', async () => {
+    const response = await request(app.getHttpServer())
+      .post('/ticket/update')
+      .set('Authorization', `Bearer ${user1_token}`)
+      .send({
+        where: {
+          id: ticket_1.id,
+        },
+        data: {
+          status: 'watched',
+        },
+      })
+      .expect(201);
   });
 });

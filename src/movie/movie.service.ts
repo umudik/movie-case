@@ -10,14 +10,14 @@ export class MovieService
   implements
     Repository<
       Movie,
-      Prisma.MovieCreateInput,
+      Movie,
       Prisma.MovieUpdateInput,
       Prisma.MovieWhereInput
     >
 {
   constructor(private prisma: PrismaService) {}
 
-  async create(data: Prisma.MovieCreateInput): Promise<Movie> {
+  async create(data: Movie): Promise<Movie> {
     return this.prisma.movie.create({
       data,
     });
