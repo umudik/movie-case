@@ -1,9 +1,11 @@
-import { Test, TestingModule } from '@nestjs/testing';
-import { INestApplication } from '@nestjs/common';
-import * as request from 'supertest';
 import { AppModule } from '../src/app.module';
 import { PrismaService } from '../src/prisma/prisma.service';
+import { INestApplication } from '@nestjs/common';
+import { Test, TestingModule } from '@nestjs/testing';
 import { Movie, Session, Ticket } from '@prisma/client';
+import * as assert from 'assert';
+import * as lodash from 'lodash';
+import * as request from 'supertest';
 
 describe('AppController (e2e)', () => {
   const seed = Date.now();
@@ -183,5 +185,14 @@ describe('AppController (e2e)', () => {
         },
       })
       .expect(201);
+  });
+
+  it('movie list must be public', async () => {
+    const response = await request(app.getHttpServer())
+      .post('/movie/find')
+      .send({})
+      .expect(201);
+
+    assert.equal(lodash.isArray(response.body), true);
   });
 });

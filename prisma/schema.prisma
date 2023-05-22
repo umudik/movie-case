@@ -7,8 +7,8 @@ datasource db {
   url      = "file:./dev.db"
 }
 
-generator nestJsSwagger {
-  provider = "prisma-generator-nestjs-swagger"
+generator docs {
+  provider = "node node_modules/prisma-docs-generator"
 }
 
 model User {
