@@ -1,6 +1,8 @@
 import { Body, Controller, Post, Request } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { UserService } from 'src/user/user.service';
+import { LoginDto, LoginResponseDto } from 'src/dtos/auth.dto';
+import { ApiResponse } from '@nestjs/swagger';
 
 @Controller('auth')
 export class AuthController {
@@ -10,7 +12,10 @@ export class AuthController {
   ) {}
 
   @Post('login')
-  async login(@Body() data) {
+  @ApiResponse({
+    type: LoginResponseDto
+  })
+  async login(@Body() data: LoginDto) {
     if (!data.password || !data.email) {
       throw Error('missing_parameter');
     }
