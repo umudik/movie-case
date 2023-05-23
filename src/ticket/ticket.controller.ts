@@ -55,9 +55,11 @@ export class TicketController {
     update.where.user_id = req.user.id
 
     if(update.data.status && update.data.status === "done"){
-      const ticktes = await this.ticketService.find(update.where);
-      const tickets_are_validated = ticktes.every((ticket)=> ticket.status === "validated")
-      if(!tickets_are_validated){
+      const validTicketCount = await this.ticketService.count({...update.where, status:{
+        not:"validated"
+      }});
+      
+      if(validTicketCount > 0){
         throw Error("Ticket must be validated")
       }
     }
