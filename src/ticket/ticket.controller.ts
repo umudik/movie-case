@@ -53,6 +53,15 @@ export class TicketController {
     @Req() req,
   ): Promise<Boolean> {
     update.where.user_id = req.user.id
+
+    if(update.data.status && update.data.status === "done"){
+      const ticktes = await this.ticketService.find(update.where);
+      const tickets_are_validated = ticktes.every((ticket)=> ticket.status === "validated")
+      if(!tickets_are_validated){
+        throw Error("Ticket must be validated")
+      }
+    }
+ 
     return await this.ticketService.update(update.where, update.data);
   }
 
