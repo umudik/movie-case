@@ -63,7 +63,7 @@ export class TicketService
 
   async update(
     where: Prisma.TicketWhereInput,
-    data: Prisma.TicketUpdateInput,
+    data: Partial<Ticket>,
   ): Promise<Boolean> {
     await this.prisma.ticket.updateMany({
       where,

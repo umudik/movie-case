@@ -1,6 +1,8 @@
 import { MovieDto } from './movie.dto';
 import { TicketDto } from './ticket.dto';
 import { ApiProperty } from '@nestjs/swagger';
+import { DateQueryDto, NumberQueryDto, StringQueryDto } from "./query.dto";
+import { Prisma } from '@prisma/client';
 
 export class SessionDto {
   @ApiProperty({ type: Number })
@@ -23,10 +25,29 @@ export class SessionDto {
 
   @ApiProperty({ type: Date })
   updated_at: Date;
-
-  @ApiProperty({ type: () => MovieDto })
-  Movie: MovieDto;
-
-  @ApiProperty({ isArray: true, type: () => TicketDto })
-  Ticket: TicketDto[];
 }
+
+export class SessionFilterDto implements Prisma.SessionWhereInput {
+    @ApiProperty({ type: NumberQueryDto, })
+    id?: NumberQueryDto;
+  
+    @ApiProperty({ type: DateQueryDto, })
+    date?: DateQueryDto;
+  
+    @ApiProperty({ type: StringQueryDto, })
+    time_slot?: StringQueryDto;
+  
+    @ApiProperty({ type: NumberQueryDto, })
+    room_no?: NumberQueryDto;
+  
+    @ApiProperty({ type: NumberQueryDto, })
+    movie_id?: NumberQueryDto;
+  }
+
+export class SessionUpdateDto {
+    @ApiProperty({ type: SessionFilterDto })
+    where:SessionFilterDto
+  
+    @ApiProperty({ type: SessionDto })
+    data:MovieDto
+  }

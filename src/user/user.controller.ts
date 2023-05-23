@@ -3,7 +3,7 @@ import { Prisma, User } from '@prisma/client';
 import { UserService } from './user.service';
 import { JwtAuthGuard } from 'src/auth/logged-in.guard';
 import { RolesGuard } from 'src/auth/role.guard';
-import { UserDto } from 'src/dtos/user.dto';
+import { UserDto, UserFilterDto, UserUpdateDto } from 'src/dtos/user.dto';
 import { ApiResponse } from '@nestjs/swagger';
 
 
@@ -44,12 +44,11 @@ export class UserController {
     type: Boolean
   })
   async updateUser(
-    @Body() where: Prisma.UserWhereUniqueInput,
-    @Body() data: Prisma.UserUpdateInput,
+    @Body() update: UserUpdateDto,
     @Req() req,
   ): Promise<Boolean> {
-    where.id = req.user.id;
-    return await this.userService.update(where, data);
+    update.where.id = req.user.id;
+    return await this.userService.update(update.where, update.data);
   }
 
   @UseGuards(JwtAuthGuard)
@@ -58,7 +57,7 @@ export class UserController {
     type: Boolean
   })
   async deleteUser(
-    @Body() where: Prisma.UserWhereUniqueInput,
+    @Body() where: UserFilterDto,
     @Req() req,
   ): Promise<Boolean> {
     where.id = req.user.id;

@@ -12,7 +12,7 @@ import { TicketService } from './ticket.service';
 import { JwtAuthGuard } from 'src/auth/logged-in.guard';
 import { RolesGuard } from 'src/auth/role.guard';
 import { ApiResponse } from '@nestjs/swagger';
-import { TicketDto } from 'src/dtos/ticket.dto';
+import { TicketDto, TicketFilterDto, TicketUpdateDto } from 'src/dtos/ticket.dto';
 
 
 @UseGuards(RolesGuard)
@@ -49,15 +49,11 @@ export class TicketController {
     type: Boolean
   })
   async updateTicket(
-    @Body()
-    updateData: {
-      where: Prisma.TicketWhereInput;
-      data: Prisma.TicketUpdateInput;
-    },
+    @Body() update: TicketUpdateDto,
     @Req() req,
   ): Promise<Boolean> {
-    updateData.where.user_id = req.user.id;
-    return await this.ticketService.update(updateData.where, updateData.data);
+    update.where.user_id = req.user.id
+    return await this.ticketService.update(update.where, update.data);
   }
 
   @UseGuards(JwtAuthGuard)
@@ -65,7 +61,7 @@ export class TicketController {
   @ApiResponse({
     type: Boolean
   })
-  async deleteTicket(@Body() where: Prisma.TicketWhereInput): Promise<Boolean> {
+  async deleteTicket(@Body() where: TicketFilterDto): Promise<Boolean> {
     return this.ticketService.delete(where);
   }
 }

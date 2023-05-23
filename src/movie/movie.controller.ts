@@ -3,7 +3,7 @@ import { Prisma, Movie } from '@prisma/client';
 import { MovieService } from './movie.service';
 import { JwtAuthGuard } from 'src/auth/logged-in.guard';
 import { RolesGuard, Roles } from 'src/auth/role.guard';
-import { MovieDto } from 'src/dtos/movie.dto';
+import { MovieDto, MovieFilterDto, MovieUpdateDto } from 'src/dtos/movie.dto';
 import { ApiResponse } from '@nestjs/swagger';
 
 @Controller('movie')
@@ -39,10 +39,9 @@ export class MovieController {
     type: Boolean
   })
   async updateMovie(
-    @Body() where: Prisma.MovieWhereUniqueInput,
-    @Body() data: Prisma.MovieUpdateInput,
+    @Body() update: MovieUpdateDto,
   ): Promise<Boolean> {
-    return await this.movieService.update(where, data);
+    return await this.movieService.update(update.where, update.data);
   }
 
   @UseGuards(JwtAuthGuard)
@@ -52,7 +51,7 @@ export class MovieController {
     type: Boolean
   })
   async deleteMovie(
-    @Body() where: Prisma.MovieWhereUniqueInput,
+    @Body() where: MovieFilterDto,
   ): Promise<Boolean> {
     return this.movieService.delete(where);
   }

@@ -31,7 +31,7 @@ export class SessionService
 
   async update(
     where: Prisma.SessionWhereInput,
-    data: Prisma.SessionUpdateInput,
+    data: Partial<Session>,
   ): Promise<Boolean> {
     await this.prisma.session.updateMany({
       where,
