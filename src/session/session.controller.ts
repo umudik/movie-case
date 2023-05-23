@@ -4,6 +4,8 @@ import { Prisma, Session } from '@prisma/client';
 import { SessionService } from './session.service';
 import { JwtAuthGuard } from 'src/auth/logged-in.guard';
 import { Roles, RolesGuard } from 'src/auth/role.guard';
+import { ApiResponse } from '@nestjs/swagger';
+import { SessionDto } from 'src/dtos/session.dto';
 
 @Controller('session')
 @UseGuards(RolesGuard)
@@ -13,12 +15,19 @@ export class SessionController {
   @UseGuards(JwtAuthGuard)
   @Roles('admin')
   @Post('create')
-  async createSession(@Body() data: Session): Promise<Session> {
+  @ApiResponse({
+    type: SessionDto
+  })
+  async createSession(@Body() data: SessionDto): Promise<Session> {
     return await this.sessionService.create(data);
   }
 
   @UseGuards(JwtAuthGuard)
   @Post('find')
+  @ApiResponse({
+    type: SessionDto,
+    isArray:true
+  })
   async findAllSessions(
     @Body() where: Prisma.SessionWhereInput,
   ): Promise<Session[]> {
@@ -28,6 +37,9 @@ export class SessionController {
   @UseGuards(JwtAuthGuard)
   @Roles('admin')
   @Post('update')
+  @ApiResponse({
+    type: Boolean
+  })
   async updateSession(
     @Body() where: Prisma.SessionWhereInput,
     @Body() data: Prisma.SessionUpdateInput,
@@ -37,6 +49,9 @@ export class SessionController {
   @UseGuards(JwtAuthGuard)
   @Roles('admin')
   @Post('delete')
+  @ApiResponse({
+    type: Boolean
+  })
   async deleteSession(
     @Body() where: Prisma.SessionWhereInput,
   ): Promise<Boolean> {

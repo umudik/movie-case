@@ -3,6 +3,8 @@ import { Prisma, User } from '@prisma/client';
 import { UserService } from './user.service';
 import { JwtAuthGuard } from 'src/auth/logged-in.guard';
 import { RolesGuard } from 'src/auth/role.guard';
+import { UserDto } from 'src/dtos/user.dto';
+import { ApiResponse } from '@nestjs/swagger';
 
 
 @Controller('user')
@@ -11,15 +13,20 @@ export class UserController {
 
   @UseGuards(RolesGuard)
   @Post('create')
-
-  async createUser(@Body() data: User): Promise<User> {
+  @ApiResponse({
+    type: UserDto
+  })
+  async createUser(@Body() data: UserDto): Promise<User> {
     data.role = 'user';
     return await this.userService.create(data);
   }
 
   @UseGuards(JwtAuthGuard)
   @Post('find')
-
+  @ApiResponse({
+    type: UserDto,
+    isArray:true
+  })
   async findAllUsers(
     @Body() where: Prisma.UserWhereInput,
     @Req() req,
@@ -33,6 +40,9 @@ export class UserController {
 
   @UseGuards(JwtAuthGuard)
   @Post('update')
+  @ApiResponse({
+    type: Boolean
+  })
   async updateUser(
     @Body() where: Prisma.UserWhereUniqueInput,
     @Body() data: Prisma.UserUpdateInput,
@@ -44,6 +54,9 @@ export class UserController {
 
   @UseGuards(JwtAuthGuard)
   @Post('delete')
+  @ApiResponse({
+    type: Boolean
+  })
   async deleteUser(
     @Body() where: Prisma.UserWhereUniqueInput,
     @Req() req,

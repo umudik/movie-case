@@ -11,6 +11,8 @@ import { Prisma, Ticket } from '@prisma/client';
 import { TicketService } from './ticket.service';
 import { JwtAuthGuard } from 'src/auth/logged-in.guard';
 import { RolesGuard } from 'src/auth/role.guard';
+import { ApiResponse } from '@nestjs/swagger';
+import { TicketDto } from 'src/dtos/ticket.dto';
 
 
 @UseGuards(RolesGuard)
@@ -20,7 +22,9 @@ export class TicketController {
 
   @UseGuards(JwtAuthGuard)
   @Post('create')
-
+  @ApiResponse({
+    type: TicketDto,
+  })
   async createTicket(@Body() data: Ticket, @Request() req): Promise<Ticket> {
     if (req.user) {
       data.user_id = req.user.id;
@@ -31,12 +35,19 @@ export class TicketController {
 
   @UseGuards(JwtAuthGuard)
   @Post('find')
+  @ApiResponse({
+    type: TicketDto,
+    isArray:true
+  })
   async getTickets(@Body() where: Prisma.TicketWhereInput): Promise<Ticket[]> {
     return this.ticketService.find(where);
   }
 
   @UseGuards(JwtAuthGuard)
   @Post('update')
+  @ApiResponse({
+    type: Boolean
+  })
   async updateTicket(
     @Body()
     updateData: {
@@ -51,6 +62,9 @@ export class TicketController {
 
   @UseGuards(JwtAuthGuard)
   @Post('delete')
+  @ApiResponse({
+    type: Boolean
+  })
   async deleteTicket(@Body() where: Prisma.TicketWhereInput): Promise<Boolean> {
     return this.ticketService.delete(where);
   }

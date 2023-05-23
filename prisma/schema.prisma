@@ -7,10 +7,6 @@ datasource db {
   url      = "file:./dev.db"
 }
 
-generator docs {
-  provider = "node node_modules/prisma-docs-generator"
-}
-
 model User {
   id         Int      @id @default(autoincrement())
   email      String
