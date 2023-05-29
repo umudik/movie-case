@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { DateQueryDto, NumberQueryDto, StringQueryDto } from "./query.dto";
+import { DateQueryDto, NumberQueryDto, StringQueryDto } from "../../dtos/query.dto";
 import { Prisma } from '@prisma/client';
 
 export class UserDto {
@@ -28,25 +28,25 @@ export class UserDto {
 
 
 export class UserFilterDto implements Prisma.UserWhereInput {
-  @ApiProperty({ type: NumberQueryDto, required: false })
+  @ApiProperty({ type: NumberQueryDto})
   id?: NumberQueryDto;
 
-  @ApiProperty({ type: StringQueryDto, required: false })
+  @ApiProperty({ type: StringQueryDto})
   email?: StringQueryDto;
 
-  @ApiProperty({ type: StringQueryDto, required: false })
+  @ApiProperty({ type: StringQueryDto})
   password?: StringQueryDto;
 
-  @ApiProperty({ type: NumberQueryDto, required: false })
+  @ApiProperty({ type: NumberQueryDto})
   age?: NumberQueryDto;
 
-  @ApiProperty({ type: StringQueryDto, required: false })
+  @ApiProperty({ type: StringQueryDto})
   role?: StringQueryDto;
 
-  @ApiProperty({ type: DateQueryDto, required: false })
+  @ApiProperty({ type: DateQueryDto})
   created_at?: DateQueryDto;
 
-  @ApiProperty({ type: DateQueryDto, required: false })
+  @ApiProperty({ type: DateQueryDto})
   updated_at?: DateQueryDto;
 }
 

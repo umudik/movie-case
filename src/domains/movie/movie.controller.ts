@@ -1,9 +1,9 @@
 import { Controller, Post, Body, UseGuards, Req } from '@nestjs/common';
 import { Prisma, Movie } from '@prisma/client';
 import { MovieService } from './movie.service';
-import { JwtAuthGuard } from 'src/auth/logged-in.guard';
-import { RolesGuard, Roles } from 'src/auth/role.guard';
-import { MovieDto, MovieFilterDto, MovieUpdateDto } from 'src/dtos/movie.dto';
+import { JwtAuthGuard } from 'src/infrastructure/security/logged-in.guard';
+import { RolesGuard, Roles } from 'src/infrastructure/security/role.guard';
+import { MovieDto, MovieFilterDto, MovieUpdateDto } from 'src/domains/movie/movie.dto';
 import { ApiResponse } from '@nestjs/swagger';
 
 @Controller('movie')
@@ -27,7 +27,7 @@ export class MovieController {
     isArray:true
   })
   async findAllMovies(
-    @Body() where: Prisma.MovieWhereUniqueInput,
+    @Body() where:MovieFilterDto,
   ): Promise<Movie[]> {
     return this.movieService.find(where);
   }
@@ -41,7 +41,8 @@ export class MovieController {
   async updateMovie(
     @Body() update: MovieUpdateDto,
   ): Promise<Boolean> {
-    return await this.movieService.update(update.where, update.data);
+    await this.movieService.update(update.where, update.data);
+    return true
   }
 
   @UseGuards(JwtAuthGuard)
@@ -53,7 +54,8 @@ export class MovieController {
   async deleteMovie(
     @Body() where: MovieFilterDto,
   ): Promise<Boolean> {
-    return this.movieService.delete(where);
+    await this.movieService.delete(where);
+    return true
   }
 }
 

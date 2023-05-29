@@ -1,7 +1,7 @@
 import { Body, Controller, Post, Request } from '@nestjs/common';
 import { AuthService } from './auth.service';
-import { UserService } from 'src/user/user.service';
-import { LoginDto, LoginResponseDto } from 'src/dtos/auth.dto';
+import { UserService } from 'src/domains/user/user.service';
+import { LoginDto, LoginResponseDto } from 'src/domains/auth/auth.dto';
 import { ApiResponse } from '@nestjs/swagger';
 
 @Controller('auth')
@@ -21,8 +21,10 @@ export class AuthController {
     }
     const user = (
       await this.userService.find({
-        email: data.email,
-        password: data.password,
+        email: {
+          equals:data.email
+        },
+        password:{equals: data.password}
       })
     )[0];
 

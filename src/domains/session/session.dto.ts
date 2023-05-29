@@ -1,7 +1,7 @@
-import { MovieDto } from './movie.dto';
-import { TicketDto } from './ticket.dto';
+import { MovieDto } from '../movie/movie.dto';
+import { TicketDto } from '../ticket/ticket.dto';
 import { ApiProperty } from '@nestjs/swagger';
-import { DateQueryDto, NumberQueryDto, StringQueryDto } from "./query.dto";
+import { DateQueryDto, NumberQueryDto, StringQueryDto } from "../../dtos/query.dto";
 import { Prisma } from '@prisma/client';
 
 export class SessionDto {
@@ -29,7 +29,7 @@ export class SessionDto {
 
 export class SessionFilterDto implements Prisma.SessionWhereInput {
     @ApiProperty({ type: NumberQueryDto, })
-    id?: NumberQueryDto;
+    id?: NumberQueryDto ;
   
     @ApiProperty({ type: DateQueryDto, })
     date?: DateQueryDto;

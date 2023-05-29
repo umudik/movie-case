@@ -1,6 +1,6 @@
 import { Movie, Prisma } from "@prisma/client";
 import { ApiProperty } from '@nestjs/swagger';
-import { DateQueryDto, NumberQueryDto, StringQueryDto } from "./query.dto";
+import { DateQueryDto, NumberQueryDto, StringQueryDto } from "../../dtos/query.dto";
 
 export class MovieDto implements Movie {
   @ApiProperty({ type: Number })
@@ -21,19 +21,19 @@ export class MovieDto implements Movie {
 
 export class MovieFilterDto implements Prisma.MovieWhereInput{
   @ApiProperty({ type: NumberQueryDto })
-  id: NumberQueryDto;
+  id?: NumberQueryDto;
 
   @ApiProperty({ type: StringQueryDto })
-  name: StringQueryDto;
+  name?: StringQueryDto;
 
   @ApiProperty({ type: NumberQueryDto })
-  age_restriction: NumberQueryDto;
+  age_restriction?: NumberQueryDto;
 
   @ApiProperty({ type: DateQueryDto })
-  created_at: DateQueryDto;
+  created_at?: DateQueryDto;
 
   @ApiProperty({ type: DateQueryDto })
-  updated_at: DateQueryDto;
+  updated_at?: DateQueryDto;
 }
 
 export class MovieUpdateDto {

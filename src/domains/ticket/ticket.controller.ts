@@ -7,12 +7,11 @@ import {
   Request,
   Req,
 } from '@nestjs/common';
-import { Prisma, Ticket } from '@prisma/client';
 import { TicketService } from './ticket.service';
-import { JwtAuthGuard } from 'src/auth/logged-in.guard';
-import { RolesGuard } from 'src/auth/role.guard';
+import { JwtAuthGuard } from 'src/infrastructure/security/logged-in.guard';
+import { RolesGuard } from 'src/infrastructure/security/role.guard';
 import { ApiResponse } from '@nestjs/swagger';
-import { TicketDto, TicketFilterDto, TicketUpdateDto } from 'src/dtos/ticket.dto';
+import { TicketDto, TicketFilterDto, TicketUpdateDto } from 'src/domains/ticket/ticket.dto';
 
 
 @UseGuards(RolesGuard)
@@ -25,11 +24,10 @@ export class TicketController {
   @ApiResponse({
     type: TicketDto,
   })
-  async createTicket(@Body() data: Ticket, @Request() req): Promise<Ticket> {
+  async createTicket(@Body() data: TicketDto, @Request() req): Promise<TicketDto> {
     if (req.user) {
       data.user_id = req.user.id;
     }
-
     return this.ticketService.create(data);
   }
 
@@ -39,7 +37,7 @@ export class TicketController {
     type: TicketDto,
     isArray:true
   })
-  async getTickets(@Body() where: Prisma.TicketWhereInput): Promise<Ticket[]> {
+  async getTickets(@Body() where: TicketFilterDto): Promise<TicketDto[]> {
     return this.ticketService.find(where);
   }
 

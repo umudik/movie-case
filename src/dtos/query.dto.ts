@@ -2,59 +2,65 @@ import { ApiProperty } from '@nestjs/swagger';
 
 export class NumberQueryDto  {
     @ApiProperty({ type: Number })
-    gt: number
+    gt?: number
 
     @ApiProperty({ type: Number })
-    gte: number
+    gte?: number
 
     @ApiProperty({ type: Number })
-    lte: number
+    lte?: number
 
     @ApiProperty({ type: Number })
-    le: number
+    le?: number
 
     @ApiProperty({ type: Number })
-    equals: number
+    equals?: number
 
     @ApiProperty({ type: Array<Number> })
-    in: number[]
+    in?: number[]
+
+    @ApiProperty({ type: Number })
+    not?: number
 }
 
 export class StringQueryDto  {    
     @ApiProperty({ type: String })
-    equals: string
+    equals?: string
     
     @ApiProperty({ type: Array<String> })
-    in: string[]
+    in?: string[]
+
+    @ApiProperty({ type: String })
+    not?: string
 }
 
 
 export class DateQueryDto  {
     @ApiProperty({ type: String })
-    gt: string
+    gt?: string
     
     @ApiProperty({ type: String })
-    gte: string
+    gte?: string
     
     @ApiProperty({ type: String })
-    lte: string
+    lte?: string
     
     @ApiProperty({ type: String })
-    le: string
+    le?: string
     
     @ApiProperty({ type: String })
-    equals: string
+    equals?: string
     
     @ApiProperty({ type: Array<String> })
-    in: string[]
+    in?: string[]
 }
 
 export class RelationQueryDto  {
     @ApiProperty({ type: Number })
-    equals: number
+    equals?: number
     
     @ApiProperty({ type: Array<Number> })
-    in: number[]
+    in?: number[]
 }
 
 

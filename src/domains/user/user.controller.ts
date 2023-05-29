@@ -1,9 +1,9 @@
 import { Controller, Post, Body, UseGuards, Req } from '@nestjs/common';
 import { Prisma, User } from '@prisma/client';
 import { UserService } from './user.service';
-import { JwtAuthGuard } from 'src/auth/logged-in.guard';
-import { RolesGuard } from 'src/auth/role.guard';
-import { UserDto, UserFilterDto, UserUpdateDto } from 'src/dtos/user.dto';
+import { JwtAuthGuard } from 'src/infrastructure/security/logged-in.guard';
+import { RolesGuard } from 'src/infrastructure/security/role.guard';
+import { UserDto, UserFilterDto, UserUpdateDto } from 'src/domains/user/user.dto';
 import { ApiResponse } from '@nestjs/swagger';
 
 
@@ -28,7 +28,7 @@ export class UserController {
     isArray:true
   })
   async findAllUsers(
-    @Body() where: Prisma.UserWhereInput,
+    @Body() where: UserFilterDto,
     @Req() req,
   ): Promise<User[]> {
     if (req.user) {

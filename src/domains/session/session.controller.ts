@@ -2,10 +2,10 @@
 import { Controller, Post, Body, UseGuards } from '@nestjs/common';
 import { Prisma, Session } from '@prisma/client';
 import { SessionService } from './session.service';
-import { JwtAuthGuard } from 'src/auth/logged-in.guard';
-import { Roles, RolesGuard } from 'src/auth/role.guard';
+import { JwtAuthGuard } from 'src/infrastructure/security/logged-in.guard';
+import { Roles, RolesGuard } from 'src/infrastructure/security/role.guard';
 import { ApiResponse } from '@nestjs/swagger';
-import { SessionDto, SessionFilterDto, SessionUpdateDto } from 'src/dtos/session.dto';
+import { SessionDto, SessionFilterDto, SessionUpdateDto } from 'src/domains/session/session.dto';
 
 @Controller('session')
 @UseGuards(RolesGuard)
@@ -29,7 +29,7 @@ export class SessionController {
     isArray:true
   })
   async findAllSessions(
-    @Body() where: Prisma.SessionWhereInput,
+    @Body() where: SessionFilterDto,
   ): Promise<Session[]> {
     return this.sessionService.find(where);
   }
@@ -45,6 +45,8 @@ export class SessionController {
   ): Promise<Boolean> {
     return await this.sessionService.update(update.where, update.data);
   }
+
+  
   @UseGuards(JwtAuthGuard)
   @Roles('admin')
   @Post('delete')
