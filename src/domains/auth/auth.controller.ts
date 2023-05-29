@@ -3,6 +3,7 @@ import { AuthService } from './auth.service';
 import { UserService } from 'src/domains/user/user.service';
 import { LoginDto, LoginResponseDto } from 'src/domains/auth/auth.dto';
 import { ApiResponse } from '@nestjs/swagger';
+import { Errors } from 'src/infrastructure/error/error';
 
 @Controller('auth')
 export class AuthController {
@@ -17,7 +18,7 @@ export class AuthController {
   })
   async login(@Body() data: LoginDto) {
     if (!data.password || !data.email) {
-      throw Error('missing_parameter');
+      throw Error(Errors.MISSING_PARAMETER);
     }
     const user = (
       await this.userService.find({
@@ -29,7 +30,7 @@ export class AuthController {
     )[0];
 
     if (!user) {
-      throw Error('auth');
+      throw Error(Errors.AUTH);
     }
     return this.authService.login(user);
   }

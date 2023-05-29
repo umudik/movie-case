@@ -12,6 +12,7 @@ import { JwtAuthGuard } from 'src/infrastructure/security/logged-in.guard';
 import { RolesGuard } from 'src/infrastructure/security/role.guard';
 import { ApiResponse } from '@nestjs/swagger';
 import { TicketDto, TicketFilterDto, TicketUpdateDto } from 'src/domains/ticket/ticket.dto';
+import { Errors } from 'src/infrastructure/error/error';
 
 
 @UseGuards(RolesGuard)
@@ -58,7 +59,7 @@ export class TicketController {
       }});
       
       if(validTicketCount > 0){
-        throw Error("Ticket must be validated")
+        throw Error(Errors.INVALID_TICKET)
       }
     }
  

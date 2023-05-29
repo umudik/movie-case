@@ -5,6 +5,7 @@ import { TicketRepository } from './ticket.repository';
 import { UserRepository } from '../user/user.repository';
 import { SessionRepository } from '../session/session.repository';
 import { MovieRepository } from '../movie/movie.repository';
+import { Errors } from 'src/infrastructure/error/error';
 
 @Injectable()
 export class TicketService {
@@ -37,9 +38,7 @@ export class TicketService {
     )[0];
 
     if (user.age < movie.age_restriction) {
-      throw new Error(
-        'The user does not meet the age restriction for this movie.',
-      );
+      throw new Error(Errors.AGE_RESTRICTION);
     }
 
     return this.ticketRepository.create(ticket);
