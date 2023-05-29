@@ -16,3 +16,9 @@ npm install
 npx prisma generate
 npm run test:e2e
 ```
+
+## Server starting
+
+```bash
+npm run start:dev
+```
