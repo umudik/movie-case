@@ -154,7 +154,6 @@ describe('AppController (e2e)', () => {
         session_id: session.id,
       })
       .expect(500);
-    //The user does not meet the age restriction for this movie.
   });
 
   it('validate ticket before the show', async () => {

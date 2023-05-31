@@ -1,5 +1,3 @@
-// src/Session/Session.repository.ts
-
 import { Injectable } from '@nestjs/common';
 import { Session, Prisma } from '@prisma/client';
 import { PrismaService } from '../../prisma/prisma.service';

@@ -1,5 +1,3 @@
-// src/Session/Session.service.ts
-
 import { Injectable } from '@nestjs/common';
 import { SessionRepository } from './session.repository';
 import { SessionDto, SessionFilterDto } from './session.dto';

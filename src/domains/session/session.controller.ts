@@ -1,4 +1,3 @@
-// src/session/session.controller.ts
 import { Controller, Post, Body, UseGuards } from '@nestjs/common';
 import { Prisma, Session } from '@prisma/client';
 import { SessionService } from './session.service';
